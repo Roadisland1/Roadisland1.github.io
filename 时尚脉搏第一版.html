@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时尚脉搏 - 服装设计师工具包</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B5A2B',      // 温暖的棕色，传达时尚与专业
+                        secondary: '#D2B48C',    // 柔和的棕褐色，作为辅助色
+                        accent: '#A67B5B',       // 强调色，用于突出重要元素
+                        light: '#F5F5DC',        // 米白色，作为背景色
+                        dark: '#3E2723',         // 深棕色，用于文本
+                    },
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            }
+            .transition-custom {
+                transition: all 0.3s ease-in-out;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light font-sans text-dark antialiased">
+    <!-- 顶部导航 -->
+    <header class="bg-white/90 backdrop-blur-sm shadow-sm fixed w-full z-50 transition-custom">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-bolt text-primary text-2xl"></i>
+                <h1 class="text-2xl md:text-3xl font-display font-semibold text-primary">时尚<span class="text-dark">脉搏</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#home" class="font-medium hover:text-primary transition-custom">首页</a>
+                <a href="#tool" class="font-medium hover:text-primary transition-custom">工具</a>
+                <a href="#about" class="font-medium hover:text-primary transition-custom">关于</a>
+            </nav>
+            <button class="md:hidden text-dark hover:text-primary transition-custom">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section id="home" class="pt-32 pb-20 md:pt-40 md:pb-32 px-4 bg-gradient-to-b from-white to-light">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 space-y-6">
+                    <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-display font-semibold leading-tight">
+                        精准把握服装<br><span class="text-primary italic">爆品节奏</span>
+                    </h2>
+                    <p class="text-lg text-gray-700 max-w-lg">
+                        专为服装设计师打造的智能分析工具，助您精准预测爆品时间，制定最优定价与上新策略。
+                    </p>
+                    <div class="pt-4">
+                        <a href="#tool" class="inline-block bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-md shadow-md hover:shadow-lg transition-custom">
+                            开始使用 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="relative z-10 rounded-lg overflow-hidden shadow-xl transform hover:scale-[1.02] transition-custom">
+                        <img src="https://picsum.photos/id/64/800/600" alt="时尚服装设计展示" class="w-full h-auto">
+                    </div>
+                    <div class="absolute top-10 -right-5 w-32 h-32 bg-secondary/30 rounded-full -z-10"></div>
+                    <div class="absolute -bottom-5 -left-5 w-24 h-24 bg-accent/20 rounded-full -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工具区域 -->
+    <section id="tool" class="py-20 px-4 bg-white">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-display font-semibold mb-4">爆品分析工具</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">输入您的服装属性与销售数据，获取专业的市场分析与建议，优化您的设计与销售策略</p>
+            </div>
+
+            <div class="bg-light rounded-xl shadow-md overflow-hidden">
+                <div class="grid md:grid-cols-5 gap-0">
+                    <!-- 输入表单 -->
+                    <div class="md:col-span-2 p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-200">
+                        <h3 class="text-xl font-display font-medium mb-6 text-primary">输入服装信息</h3>
+                        
+                        <form id="fashionForm" class="space-y-6">
+                            <!-- 品类选择 -->
+                            <div>
+                                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">服装品类 *</label>
+                                <select id="category" name="category" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-custom">
+                                    <option value="">请选择品类</option>
+                                    <option value="dress">裙子类（连衣裙、半身裙）</option>
+                                    <option value="pants">裤子类（休闲裤、西裤、牛仔裤）</option>
+                                    <option value="shirt">衬衫类（春夏衬衫）</option>
+                                    <option value="knitwear">针织类（毛针织、毛衣）</option>
+                                    <option value="wintercoat">冬季外套类（羽绒服、毛呢外套）</option>
+                                    <option value="suit">西装类（春夏西装）</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 设计风格 -->
+                            <div>
+                                <label for="style" class="block text-sm font-medium text-gray-700 mb-1">设计风格</label>
+                                <input type="text" id="style" name="style" placeholder="例如：休闲、商务、复古..."
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-custom">
+                            </div>
+                            
+                            <!-- 材质 -->
+                            <div>
+                                <label for="material" class="block text-sm font-medium text-gray-700 mb-1">主要材质</label>
+                                <input type="text" id="material" name="material" placeholder="例如：棉、羊毛、丝绸..."
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-custom">
+                            </div>
+                            
+                            <!-- 价格区间 -->
+                            <div>
+                                <label for="priceRange" class="block text-sm font-medium text-gray-700 mb-1">目标价格区间 *</label>
+                                <select id="priceRange" name="priceRange" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-custom">
+                                    <option value="">请选择价格区间</option>
+                                    <option value="200-400">大众入门款（200-400元）</option>
+                                    <option value="401-600">中端大众款（401-600元）</option>
+                                    <option value="601-1000">中高端款（601-1000元）</option>
+                                    <option value="1001-1500">高端款（1001-1500元）</option>
+                                    <option value="1501-2000">轻奢款（1501-2000元）</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 月度销量 -->
+                            <div>
+                                <label for="monthlySales" class="block text-sm font-medium text-gray-700 mb-1">预期月度销量（万元）</label>
+                                <input type="number" id="monthlySales" name="monthlySales" min="0" step="10" placeholder="例如：80"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-custom">
+                            </div>
+                            
+                            <button type="submit" id="analyzeBtn"
+                                class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 rounded-md shadow hover:shadow-md transition-custom flex items-center justify-center">
+                                <i class="fa fa-line-chart mr-2"></i> 分析数据并生成建议
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- 结果展示 -->
+                    <div class="md:col-span-3 p-6 md:p-8 bg-white" id="resultsSection">
+                        <h3 class="text-xl font-display font-medium mb-6 text-primary">分析结果与建议</h3>
+                        
+                        <div class="flex items-center justify-center h-64 text-gray-500">
+                            <div class="text-center">
+                                <i class="fa fa-bar-chart text-5xl mb-4 opacity-30"></i>
+                                <p>请输入服装信息并点击分析按钮获取建议</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 结果将通过JavaScript动态插入 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能特点 -->
+    <section class="py-20 px-4 bg-light">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-display font-semibold mb-4">工具特点</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">时尚脉搏为服装设计师提供精准的市场分析，助您在竞争激烈的时尚行业中脱颖而出</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- 特点1 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-custom border border-gray-100">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-calendar text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium mb-3">爆品时间预测</h3>
+                    <p class="text-gray-600">基于历史销售数据与季节趋势，精准预测各类服装成为爆品的最佳时间段，把握销售黄金期。</p>
+                </div>
+                
+                <!-- 特点2 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-custom border border-gray-100">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-tags text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium mb-3">智能定价建议</h3>
+                    <p class="text-gray-600">结合价格带与客群偏好分析，提供最适合您设计定位的定价策略，平衡销量与利润最大化。</p>
+                </div>
+                
+                <!-- 特点3 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-custom border border-gray-100">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-refresh text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium mb-3">优化上新方案</h3>
+                    <p class="text-gray-600">根据品类季节周期，提供最佳上新时间规划，确保产品在爆点期前占据市场先机。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于区域 -->
+    <section id="about" class="py-20 px-4 bg-white">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="md:w-1/2">
+                    <img src="https://picsum.photos/id/325/800/600" alt="服装设计师工作场景" class="rounded-lg shadow-lg w-full h-auto">
+                </div>
+                <div class="md:w-1/2 space-y-6">
+                    <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-display font-semibold">关于 时尚脉搏</h2>
+                    <p class="text-gray-700">
+                        时尚脉搏是一款专为服装设计师打造的智能分析工具，旨在帮助设计师更精准地把握市场趋势，优化设计与销售策略。
+                    </p>
+                    <p class="text-gray-700">
+                        我们基于海量服装销售数据与行业洞察，开发出这套智能分析系统，能够为不同品类的服装提供精准的爆品时间预测、定价建议和上新方案。
+                    </p>
+                    <p class="text-gray-700">
+                        无论您是独立设计师还是品牌设计团队，时尚脉搏都能成为您工作中的得力助手，让数据驱动设计，提升市场成功率。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-6 md:mb-0">
+                    <i class="fa fa-bolt text-secondary text-2xl"></i>
+                    <h2 class="text-2xl font-display font-semibold">时尚<span class="text-secondary">脉搏</span></h2>
+                </div>
+                <div class="flex space-x-6 mb-6 md:mb-0">
+                    <a href="#home" class="hover:text-secondary transition-custom">首页</a>
+                    <a href="#tool" class="hover:text-secondary transition-custom">工具</a>
+                    <a href="#about" class="hover:text-secondary transition-custom">关于</a>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-dark transition-custom">
+                        <i class="fa fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-dark transition-custom">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-dark transition-custom">
+                        <i class="fa fa-pinterest"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-8 pt-8 text-center text-sm text-white/60">
+                <p>&copy; 2023 时尚脉搏. 为服装设计师打造的智能分析工具。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 确保DOM加载完成后再执行脚本
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，初始化分析工具...');
+            
+            // 获取表单和按钮元素
+            const fashionForm = document.getElementById('fashionForm');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            
+            // 检查元素是否存在
+            if (!fashionForm) {
+                console.error('未找到表单元素fashionForm');
+                return;
+            }
+            
+            if (!analyzeBtn) {
+                console.error('未找到按钮元素analyzeBtn');
+                return;
+            }
+            
+            // 为按钮添加点击事件（作为表单提交的备份）
+            analyzeBtn.addEventListener('click', function(e) {
+                console.log('分析按钮被点击');
+                // 触发表单提交
+                fashionForm.dispatchEvent(new Event('submit'));
+            });
+            
+            // 表单提交处理
+            fashionForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('表单开始提交处理');
+                
+                try {
+                    // 获取表单数据
+                    const category = document.getElementById('category').value;
+                    const style = document.getElementById('style').value;
+                    const material = document.getElementById('material').value;
+                    const priceRange = document.getElementById('priceRange').value;
+                    const monthlySales = document.getElementById('monthlySales').value;
+                    
+                    // 验证必填字段
+                    if (!category || !priceRange) {
+                        alert('请填写所有必填字段（带*号的选项）');
+                        return;
+                    }
+                    
+                    console.log('表单数据验证通过，开始生成分析结果');
+                    
+                    // 生成分析结果
+                    const results = generateResults(category, priceRange);
+                    
+                    // 显示结果
+                    displayResults(results, category, style, material, priceRange, monthlySales);
+                    
+                    // 平滑滚动到结果区域
+                    document.querySelector('#resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                } catch (error) {
+                    console.error('处理表单时发生错误:', error);
+                    alert('分析过程中发生错误，请重试。详情请查看控制台。');
+                }
+            });
+            
+            // 生成分析结果
+            function generateResults(category, priceRange) {
+                let peakSeason, pricingAdvice, launchPlan, chartData;
+                
+                // 根据品类确定爆品时间
+                switch(category) {
+                    case 'dress':
+                        peakSeason = {
+                            title: '裙子类爆品时间节点',
+                            main: '5-7月',
+                            pre: '4月（预热期）',
+                            post: '8月（收尾期）',
+                            reason: '契合春夏季节穿着需求，气温升高后连衣裙和半身裙成为主流选择'
+                        };
+                        chartData = {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                            data: [10, 15, 30, 60, 95, 100, 90, 65, 40, 25, 15, 10]
+                        };
+                        break;
+                    case 'pants':
+                        peakSeason = {
+                            title: '裤子类爆品时间节点',
+                            main: '11-12月',
+                            pre: '10月（预热期）',
+                            post: '1月（收尾期）',
+                            reason: '对应秋冬季节穿搭场景，气温下降后裤子类需求增加'
+                        };
+                        chartData = {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                            data: [60, 45, 30, 20, 15, 10, 10, 15, 30, 60, 95, 100]
+                        };
+                        break;
+                    case 'shirt':
+                        peakSeason = {
+                            title: '衬衫类爆品时间节点',
+                            main: '5-7月',
+                            pre: '4月（预热期）',
+                            post: '8月（收尾期）',
+                            reason: '服务春夏季节，适合职场与日常多种场合穿着'
+                        };
+                        chartData = {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                            data: [15, 20, 40, 70, 90, 100, 85, 60, 40, 25, 20, 15]
+                        };
+                        break;
+                    case 'knitwear':
+                        peakSeason = {
+                            title: '针织类爆品时间节点',
+                            main: '11-12月',
+                            pre: '9-10月（预热期）',
+                            post: '1月（收尾期）',
+                            reason: '毛针织在9-11月，毛衣在11-12月及次年1月，覆盖秋冬到冬春过渡季'
+                        };
+                        chartData = {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                            data: [70, 50, 30, 15, 10, 5, 5, 10, 40, 70, 95, 100]
+                        };
+                        break;
+                    case 'wintercoat':
+                        peakSeason = {
+                            title: '冬季外套类爆品时间节点',
+                            main: '11-12月',
+                            pre: '10月（预热期）',
+                            post: '1月（收尾期）',
+                            reason: '匹配冬季寒冷气候的穿着需求，气温骤降时需求激增'
+                        };
+                        chartData = {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                            data: [80, 60, 30, 10, 5, 0, 0, 0, 5, 40, 90, 100]
+                        };
+                        break;
+                    case 'suit':
+                        peakSeason = {
+                            title: '西装类爆品时间节点',
+                            main: '3-5月',
+                            pre: '2月（预热期）',
+                            post: '6月（收尾期）',
+                            reason: '对应春季到初夏的职场/日常穿搭场景，适合过渡季节穿着'
+                        };
+                        chartData = {
+                            labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                            data: [20, 40, 80, 100, 85, 50, 30, 25, 30, 35, 30, 25]
+                        };
+                        break;
+                    default:
+                        throw new Error('未知的服装品类');
+                }
+                
+                // 根据价格区间确定定价建议
+                switch(priceRange) {
+                    case '200-400':
+                        pricingAdvice = {
+                            title: '大众入门款定价策略',
+                            price: '200-400元',
+                            strategy: '主打性价比，适合基础款和引流产品，可配合频繁促销活动提升销量',
+                            audience: '大众消费群体，价格敏感度高，注重实用性和基本款式'
+                        };
+                        break;
+                    case '401-600':
+                        pricingAdvice = {
+                            title: '中端大众款定价策略',
+                            price: '401-600元',
+                            strategy: '平衡品质与价格，适合设计感稍强的款式，可适度促销',
+                            audience: '追求品质的大众消费者，愿意为更好的面料和设计支付溢价'
+                        };
+                        break;
+                    case '601-1000':
+                        pricingAdvice = {
+                            title: '中高端款定价策略',
+                            price: '601-1000元',
+                            strategy: '强调设计感和材质品质，适合有一定品牌认知的产品，促销频率可降低',
+                            audience: '中产阶级消费者，注重品质、设计和品牌，价格敏感度中等'
+                        };
+                        break;
+                    case '1001-1500':
+                        pricingAdvice = {
+                            title: '高端款定价策略',
+                            price: '1001-1500元',
+                            strategy: '突出品牌价值和独特设计，限量发售，注重会员维护和私域运营',
+                            audience: '高收入人群，追求品质和独特性，对价格敏感度较低'
+                        };
+                        break;
+                    case '1501-2000':
+                        pricingAdvice = {
+                            title: '轻奢款定价策略',
+                            price: '1501-2000元',
+                            strategy: '打造高端形象，强调稀缺性和工艺价值，提供定制化服务',
+                            audience: '高净值人群，注重身份象征和独家体验，对价格不敏感'
+                        };
+                        break;
+                    default:
+                        throw new Error('未知的价格区间');
+                }
+                
+                // 根据品类确定上新方案
+                switch(category) {
+                    case 'dress':
+                    case 'shirt':
+                        launchPlan = {
+                            title: '春夏品类上新方案',
+                            timing: '3-4月',
+                            reason: '需在爆点期（5-7月）前上新，为市场预热，让消费者有足够时间决策、购买',
+                            strategy: '3月少量上新测试市场反应，4月全面铺开，配合春夏主题营销活动'
+                        };
+                        break;
+                    case 'pants':
+                    case 'knitwear':
+                    case 'wintercoat':
+                        launchPlan = {
+                            title: '秋冬品类上新方案',
+                            timing: '8-10月',
+                            reason: '需在爆点期（9-12月）前集中上新，抢占市场先机',
+                            strategy: '8-9月开始逐步上新，10月完成全部秋冬系列布局，赶上双十一销售旺季'
+                        };
+                        break;
+                    case 'suit':
+                        launchPlan = {
+                            title: '西装品类上新方案',
+                            timing: '2月',
+                            reason: '需在爆点期（3-5月）前完成上新，迎接春季职场穿搭需求',
+                            strategy: '春节后立即上新，配合职场主题推广，抓住春季换装季'
+                        };
+                        break;
+                    default:
+                        throw new Error('未知的服装品类');
+                }
+                
+                return {
+                    peakSeason,
+                    pricingAdvice,
+                    launchPlan,
+                    chartData
+                };
+            }
+            
+            // 显示分析结果
+            function displayResults(results, category, style, material, priceRange, monthlySales) {
+                console.log('开始显示分析结果');
+                const resultsSection = document.getElementById('resultsSection');
+                
+                if (!resultsSection) {
+                    throw new Error('未找到结果展示区域');
+                }
+                
+                // 品类名称映射
+                const categoryNames = {
+                    'dress': '裙子类',
+                    'pants': '裤子类',
+                    'shirt': '衬衫类',
+                    'knitwear': '针织类',
+                    'wintercoat': '冬季外套类',
+                    'suit': '西装类'
+                };
+                
+                // 价格区间名称映射
+                const priceRangeNames = {
+                    '200-400': '大众入门款（200-400元）',
+                    '401-600': '中端大众款（401-600元）',
+                    '601-1000': '中高端款（601-1000元）',
+                    '1001-1500': '高端款（1001-1500元）',
+                    '1501-2000': '轻奢款（1501-2000元）'
+                };
+                
+                // 构建结果HTML
+                let resultHtml = `
+                    <div class="mb-8">
+                        <h4 class="text-sm uppercase tracking-wider text-gray-500 mb-2">分析摘要</h4>
+                        <div class="bg-light p-4 rounded-lg">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500">品类</p>
+                                    <p class="font-medium">${categoryNames[category]}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">价格定位</p>
+                                    <p class="font-medium">${priceRangeNames[priceRange]}</p>
+                                </div>
+                                ${style ? `
+                                <div>
+                                    <p class="text-gray-500">风格</p>
+                                    <p class="font-medium">${style}</p>
+                                </div>
+                                ` : ''}
+                                ${material ? `
+                                <div>
+                                    <p class="text-gray-500">材质</p>
+                                    <p class="font-medium">${material}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 销售趋势图表 -->
+                    <div class="mb-10">
+                        <h4 class="text-base font-medium mb-4">月度销售趋势预测</h4>
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 h-64">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- 爆品时间节点 -->
+                    <div class="mb-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa fa-calendar text-primary"></i>
+                            </div>
+                            <h4 class="text-base font-medium">${results.peakSeason.title}</h4>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-5">
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-500 mb-1">核心爆点期</p>
+                                <p class="text-xl font-semibold text-primary">${results.peakSeason.main}</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <p class="text-sm text-gray-500 mb-1">预热期</p>
+                                    <p class="font-medium">${results.peakSeason.pre}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500 mb-1">收尾期</p>
+                                    <p class="font-medium">${results.peakSeason.post}</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">${results.peakSeason.reason}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 定价建议 -->
+                    <div class="mb-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa fa-tags text-primary"></i>
+                            </div>
+                            <h4 class="text-base font-medium">${results.pricingAdvice.title}</h4>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-5">
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-500 mb-1">建议定价</p>
+                                <p class="text-xl font-semibold text-primary">${results.pricingAdvice.price}</p>
+                            </div>
+                            <div class="mb-3">
+                                <p class="text-sm text-gray-500 mb-1">营销策略</p>
+                                <p class="text-sm">${results.pricingAdvice.strategy}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">目标客群特点</p>
+                                <p class="text-sm">${results.pricingAdvice.audience}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 上新方案 -->
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa fa-refresh text-primary"></i>
+                            </div>
+                            <h4 class="text-base font-medium">${results.launchPlan.title}</h4>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-5">
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-500 mb-1">建议上新时间</p>
+                                <p class="text-xl font-semibold text-primary">${results.launchPlan.timing}</p>
+                            </div>
+                            <div class="mb-3">
+                                <p class="text-sm text-gray-500 mb-1">上新理由</p>
+                                <p class="text-sm">${results.launchPlan.reason}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">具体策略</p>
+                                <p class="text-sm">${results.launchPlan.strategy}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                resultsSection.innerHTML = resultHtml;
+                
+                // 绘制销售趋势图表
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                // 销毁已存在的图表（如果有）
+                if (window.salesChartInstance) {
+                    window.salesChartInstance.destroy();
+                }
+                // 创建新图表
+                window.salesChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: results.chartData.labels,
+                        datasets: [{
+                            label: '销售趋势预测',
+                            data: results.chartData.data,
+                            borderColor: '#8B5A2B',
+                            backgroundColor: 'rgba(139, 90, 43, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log('分析结果显示完成');
+            }
+            
+            // 滚动时导航栏效果
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('py-2', 'shadow');
+                    header.classList.remove('py-4');
+                } else {
+                    header.classList.add('py-4');
+                    header.classList.remove('py-2', 'shadow');
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            console.log('工具初始化完成，等待用户输入...');
+        });
+    </script>
+</body>
+</html>
+    
